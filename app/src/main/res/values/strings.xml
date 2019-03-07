@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ToDo</string>
+    <string name="item_text">Item text</string>
+    <string name="clear">Clear</string>
 </resources>
