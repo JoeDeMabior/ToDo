@@ -1,5 +1,6 @@
 package com.joey.todo.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,19 +9,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joey.todo.R
 import com.joey.todo.room.Item
 
-class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+class TaskAdapter internal constructor(context: Context): RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+    private val inflater = LayoutInflater.from(context)
     private var items: List<Item> = ArrayList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.model, parent, false)
-        return ItemViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        val itemView = inflater.inflate(R.layout.model, parent, false)
+        return TaskViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentItem = items[position]
         holder.txt.text = currentItem.title
         holder.desc.text = currentItem.description
@@ -32,7 +34,7 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         notifyDataSetChanged()
     }
 
-    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txt: TextView = itemView.findViewById(R.id.title)
         val desc: TextView = itemView.findViewById(R.id.desc)
         val now: TextView = itemView.findViewById(R.id.moment)

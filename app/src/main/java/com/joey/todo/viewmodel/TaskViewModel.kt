@@ -12,9 +12,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class ItemViewModel(application: Application) : AndroidViewModel(application) {
+class TaskViewModel(application: Application) : AndroidViewModel(application) {
     private val repo: ItemRepo
-    private val allItems: LiveData<List<Item>>
+    val allItems: LiveData<List<Item>>
 
     init {
         val itemDao = ItemDatabase.getInstance(application).itemDao()
