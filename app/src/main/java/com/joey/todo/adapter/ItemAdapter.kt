@@ -27,6 +27,11 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         holder.now.text = currentItem.deadline
     }
 
+    fun setItems(items: List<Item>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
+
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txt: TextView = itemView.findViewById(R.id.title)
         val desc: TextView = itemView.findViewById(R.id.desc)
