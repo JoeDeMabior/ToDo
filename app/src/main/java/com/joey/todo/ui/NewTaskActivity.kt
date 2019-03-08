@@ -25,9 +25,6 @@ class NewTaskActivity : AppCompatActivity() {
         desc = findViewById(R.id.description)
         now = findViewById(R.id.date)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
         setTitle()
 
         val save = findViewById<Button>(R.id.create)
