@@ -12,4 +12,5 @@
     <string name="enable_notification">Enable Notification</string>
     <string name="priority">Priority</string>
     <string name="_1_5">(1-5)</string>
+    <string name="save">Save</string>
 </resources>
