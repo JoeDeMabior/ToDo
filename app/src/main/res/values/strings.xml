@@ -2,4 +2,14 @@
     <string name="app_name">ToDo</string>
     <string name="item_text">Item text</string>
     <string name="clear">Clear</string>
+    <string name="create_a_new_task">Create a New Task</string>
+    <string name="name_of_the_task">Name of the task</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="enter_text_here">Enter text here</string>
+    <string name="deadline">Deadline</string>
+    <string name="select_date">Select date</string>
+    <string name="enable_notification">Enable Notification</string>
+    <string name="priority">Priority</string>
+    <string name="_1_5">(1-5)</string>
 </resources>
