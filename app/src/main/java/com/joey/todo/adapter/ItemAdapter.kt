@@ -10,10 +10,12 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.joey.todo.R
 import com.joey.todo.model.Item
+import com.joey.todo.my_interface.ItemRowListener
 
 class ItemAdapter(context: Context, items: MutableList<Item>) : BaseAdapter() {
     private val inflater = LayoutInflater.from(context)
     private var itemList = items
+    private var rowListener = context as ItemRowListener
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val objectId: String = itemList[position].id as String
@@ -33,6 +35,14 @@ class ItemAdapter(context: Context, items: MutableList<Item>) : BaseAdapter() {
 
         holder.label.text = itemText
         holder.isDone.isChecked = done
+
+        holder.isDone.setOnClickListener {
+            rowListener.modifyItemState(objectId, !done)
+        }
+
+        holder.del.setOnClickListener {
+            rowListener.onItemDelete(objectId)
+        }
 
         return view
     }

@@ -12,9 +12,10 @@ import com.google.firebase.database.*
 import com.joey.todo.R
 import com.joey.todo.adapter.ItemAdapter
 import com.joey.todo.model.Item
+import com.joey.todo.my_interface.ItemRowListener
 import es.dmoral.toasty.Toasty
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemRowListener {
     private lateinit var reference: DatabaseReference
 
     private var itemList: MutableList<Item>? = null
@@ -100,5 +101,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
         alert.show()
+    }
+
+    override fun modifyItemState(id: String, done: Boolean) {
+        val itemRef = reference.child("items").child(id)
+        itemRef.child("done").setValue(done)
+    }
+
+    override fun onItemDelete(id: String) {
+        val itemRef = reference.child("items").child(id)
+        itemRef.removeValue()
     }
 }
