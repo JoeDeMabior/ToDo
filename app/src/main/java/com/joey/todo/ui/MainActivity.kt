@@ -3,8 +3,11 @@ package com.joey.todo.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +17,7 @@ import com.joey.todo.R
 import com.joey.todo.adapter.TaskAdapter
 import com.joey.todo.room.Item
 import com.joey.todo.viewmodel.TaskViewModel
+import es.dmoral.toasty.Toasty
 
 class MainActivity : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
@@ -42,6 +46,31 @@ class MainActivity : AppCompatActivity() {
         taskViewModel.allItems.observe(this, Observer { items ->
             items?.let { taskAdapter.setItems(it) }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.itemId
+        if (id == R.id.delete_all) {
+            val builder = AlertDialog.Builder(this)
+            builder.setMessage("Are you really sure you want to delete all tasks?")
+            builder.setPositiveButton("OK") {_, _ ->
+                taskViewModel.deleteAll()
+                Toasty.success(this, "All tasks deleted.", Toast.LENGTH_SHORT).show()
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            builder.show()
+
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
