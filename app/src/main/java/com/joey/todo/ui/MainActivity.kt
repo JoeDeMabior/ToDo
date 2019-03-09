@@ -12,22 +12,24 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.joey.todo.R
 import com.joey.todo.adapter.TaskAdapter
 import com.joey.todo.room.Item
+import com.joey.todo.task_interface.AlterTaskListener
 import com.joey.todo.viewmodel.TaskViewModel
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var taskViewModel: TaskViewModel
-    private var tag = MainActivity::class.java.simpleName
+    private lateinit var taskAdapter: TaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        taskAdapter = TaskAdapter(this)
+
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewTaskActivity::class.java)
             startActivityForResult(intent, ADD_TASK_REQUEST_CODE)
@@ -38,7 +40,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         val recyclerView = findViewById<RecyclerView>(R.id.tasks)
-        val taskAdapter = TaskAdapter(this)
         recyclerView.adapter = taskAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -46,6 +47,18 @@ class MainActivity : AppCompatActivity() {
         taskViewModel.allItems.observe(this, Observer { items ->
             items?.let { taskAdapter.setItems(it) }
         })
+
+        object : TaskAdapter.TaskAdapterListener {
+            override fun editTask(item: Item) {
+                val intent = Intent(this@MainActivity, NewTaskActivity::class.java)
+                startActivityForResult(intent, EDIT_TASK_REQUEST_CODE)
+            }
+
+            override fun deleteTask(item: Item) {
+                taskAdapter.removeTask(item)
+            }
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -57,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         val id = item?.itemId
         if (id == R.id.delete_all) {
             val builder = AlertDialog.Builder(this)
-            builder.setMessage("Are you really sure you want to delete all tasks?")
-            builder.setPositiveButton("OK") {_, _ ->
+            builder.setMessage("Are you sure you want to delete all tasks?")
+            builder.setPositiveButton("OK") { _, _ ->
                 taskViewModel.deleteAll()
                 Toasty.success(this, "All tasks deleted.", Toast.LENGTH_SHORT).show()
             }
@@ -86,6 +99,18 @@ class MainActivity : AppCompatActivity() {
 
                 taskViewModel.insert(item)
             }
+            Toasty.success(this, "Task saved successfully.", Toast.LENGTH_SHORT).show()
+        } else if (requestCode == EDIT_TASK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val item = Item(
+                    it.getStringExtra(NewTaskActivity.EXTRA_NAME),
+                    it.getStringExtra(NewTaskActivity.EXTRA_DESC),
+                    it.getStringExtra(NewTaskActivity.EXTRA_DATE)
+                )
+
+                taskViewModel.update(item)
+            }
+            Toasty.success(this, "Task updated successfully.", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -2,12 +2,11 @@ package com.joey.todo.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.room.OnConflictStrategy.ABORT
 import androidx.room.OnConflictStrategy.REPLACE
 
 @Dao
 interface ItemDao {
-    @Insert(onConflict = ABORT)
+    @Insert(onConflict = REPLACE)
     fun insert(item: Item)
 
     @Update(onConflict = REPLACE)

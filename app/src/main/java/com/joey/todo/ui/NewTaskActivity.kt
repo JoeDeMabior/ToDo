@@ -82,7 +82,7 @@ class NewTaskActivity : AppCompatActivity() {
             dateFormat()
         }
 
-        val time =TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+        val time = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
         }
