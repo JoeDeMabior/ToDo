@@ -48,17 +48,29 @@ class MainActivity : AppCompatActivity() {
             items?.let { taskAdapter.setItems(it) }
         })
 
-        object : TaskAdapter.TaskAdapterListener {
+        taskAdapter.alterTask(object : TaskAdapter.TaskAdapterListener {
             override fun editTask(item: Item) {
                 val intent = Intent(this@MainActivity, NewTaskActivity::class.java)
+                intent.putExtra(NewTaskActivity.EXTRA_NAME, item.title)
+                intent.putExtra(NewTaskActivity.EXTRA_DESC, item.description)
+                intent.putExtra(NewTaskActivity.EXTRA_DATE, item.deadline)
                 startActivityForResult(intent, EDIT_TASK_REQUEST_CODE)
             }
 
             override fun deleteTask(item: Item) {
-                taskAdapter.removeTask(item)
+                AlertDialog.Builder(this@MainActivity)
+                    .setMessage("Are you sure you want to delete ${item.title}?")
+                    .setPositiveButton("OK") { _, _ ->
+                        taskViewModel.delete(item)
+                        Toasty.info(this@MainActivity, "${item.title} deleted.", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .show()
             }
 
-        }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

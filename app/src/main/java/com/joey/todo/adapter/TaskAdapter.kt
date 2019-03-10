@@ -21,7 +21,6 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
     private val inflater = LayoutInflater.from(context)
     private var items = ArrayList<Item>()
     var clickListener: TaskAdapterListener? = null
-    private lateinit var taskViewModel: TaskViewModel
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val itemView = inflater.inflate(R.layout.model, parent, false)
@@ -38,42 +37,15 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         holder.desc.text = currentItem.description
         holder.now.text = currentItem.deadline
 
-        taskViewModel = TaskViewModel(application = Application())
-
-        val task = Item(items[position].title, items[position].description, items[position].deadline)
-
         holder.del.setOnClickListener {
             if (position != RecyclerView.NO_POSITION) {
-                clickListener?.deleteTask(items[position])
-
-                AlertDialog.Builder(holder.itemView.context)
-                    .setMessage("Are you sure you want to delete ${task.title}?")
-                    .setPositiveButton("OK") { _, _ ->
-                        taskViewModel.delete(task)
-                        items.removeAt(position)
-                        notifyItemRemoved(position)
-                        notifyItemRangeChanged(position, items.size)
-                        Toasty.info(holder.itemView.context, "${task.title} deleted.", Toast.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.cancel()
-                    }
-                    .show()
+                clickListener?.deleteTask(items[holder.adapterPosition])
             }
         }
 
         holder.edit.setOnClickListener {
             if (position != RecyclerView.NO_POSITION) {
-                clickListener?.editTask(items[position])
-
-                val intent = Intent(holder.itemView.context, NewTaskActivity::class.java)
-                intent.putExtra(NewTaskActivity.EXTRA_NAME, task.title)
-                intent.putExtra(NewTaskActivity.EXTRA_DESC, task.description)
-                intent.putExtra(NewTaskActivity.EXTRA_DATE, task.deadline)
-
-                holder.itemView.context.startActivity(intent)
-
-                taskViewModel.update(task)
+                clickListener?.editTask(items[holder.adapterPosition])
             }
         }
     }
@@ -83,16 +55,17 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         notifyDataSetChanged()
     }
 
+    /*
     fun removeTask(item: Item) {
         items.forEachIndexed { index, task ->
             if (task.id == item.id) {
                 items.removeAt(index)
-                taskViewModel.delete(item)
                 notifyDataSetChanged()
                 return@forEachIndexed
             }
         }
     }
+    */
 
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txt: TextView = itemView.findViewById(R.id.title)
@@ -106,4 +79,9 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         fun editTask(item: Item)
         fun deleteTask(item: Item)
     }
+
+    fun alterTask(clickListener: TaskAdapterListener) {
+        this.clickListener = clickListener
+    }
+
 }
