@@ -44,7 +44,7 @@ class NewTaskActivity : AppCompatActivity() {
 
     private fun setTitle() {
         val edit = "Edit Your Task"
-        val intent = Intent()
+        val intent = intent
         if (intent.hasExtra(EXTRA_ID)) {
             title = "Edit Task"
             head.text = edit
@@ -71,7 +71,7 @@ class NewTaskActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_DESC, description)
         intent.putExtra(EXTRA_DATE, moment)
 
-        val taskId = EXTRA_ID
+        val taskId = 0
         intent.putExtra(EXTRA_ID, taskId)
 
         setResult(Activity.RESULT_OK, intent)

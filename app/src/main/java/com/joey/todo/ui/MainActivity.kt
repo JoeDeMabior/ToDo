@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == ADD_TASK && resultCode == Activity.RESULT_OK) {
             data?.let {
                 val task = Task(
-                    it.getIntExtra(NewTaskActivity.EXTRA_ID, 0),
                     it.getStringExtra(NewTaskActivity.EXTRA_NAME),
                     it.getStringExtra(NewTaskActivity.EXTRA_DESC),
                     it.getStringExtra(NewTaskActivity.EXTRA_DATE)
@@ -116,7 +115,6 @@ class MainActivity : AppCompatActivity() {
         } else if (requestCode == EDIT_TASK && resultCode == Activity.RESULT_OK) {
             data?.let {
                 val task = Task(
-                    it.getIntExtra(NewTaskActivity.EXTRA_ID, 0),
                     it.getStringExtra(NewTaskActivity.EXTRA_NAME),
                     it.getStringExtra(NewTaskActivity.EXTRA_DESC),
                     it.getStringExtra(NewTaskActivity.EXTRA_DATE)
