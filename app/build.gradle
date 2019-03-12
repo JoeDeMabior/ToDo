@@ -6,8 +6,6 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
-apply plugin: 'com.google.gms.google-services'
-
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -36,11 +34,11 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.github.GrenderG:Toasty:1.4.0'
     implementation 'com.google.android.material:material:1.1.0-alpha04'
-    implementation 'com.google.firebase:firebase-core:16.0.7'
-    implementation 'com.google.firebase:firebase-database:16.1.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.2-alpha01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.2-alpha01'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+
 
     // Lifecycle components; ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
