@@ -5,18 +5,18 @@ import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 
 @Dao
-interface ItemDao {
+interface TaskDao {
     @Insert(onConflict = REPLACE)
-    fun insert(item: Item)
+    fun insert(task: Task)
 
     @Update(onConflict = REPLACE)
-    fun update(item: Item)
+    fun update(task: Task)
 
     @Delete
-    fun delete(item: Item)
+    fun delete(task: Task)
 
     @Query("SELECT * FROM todo_list ORDER BY id")
-    fun getAllItems(): LiveData<List<Item>>
+    fun getAllItems(): LiveData<List<Task>>
 
     @Query("DELETE FROM todo_list")
     fun deleteAll()

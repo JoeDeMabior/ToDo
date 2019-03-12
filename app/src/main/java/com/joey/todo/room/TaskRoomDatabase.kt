@@ -5,16 +5,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Item::class], version = 1)
-abstract class ItemDatabase : RoomDatabase() {
+@Database(entities = [Task::class], version = 1)
+abstract class TaskRoomDatabase : RoomDatabase() {
 
-    abstract fun itemDao() : ItemDao
+    abstract fun itemDao() : TaskDao
 
     companion object {
         @Volatile
-        private var INSTANCE: ItemDatabase? = null
+        private var INSTANCE: TaskRoomDatabase? = null
 
-        fun getInstance(context: Context): ItemDatabase {
+        fun getInstance(context: Context): TaskRoomDatabase {
             val temp = INSTANCE
             if (temp != null) {
                 return temp
@@ -23,7 +23,7 @@ abstract class ItemDatabase : RoomDatabase() {
             synchronized(this) {
                 val obj = Room.databaseBuilder(
                     context.applicationContext,
-                    ItemDatabase::class.java,
+                    TaskRoomDatabase::class.java,
                     "task_db"
                 )
                     .fallbackToDestructiveMigration()

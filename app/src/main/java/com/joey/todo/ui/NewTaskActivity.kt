@@ -6,10 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.joey.todo.R
 import es.dmoral.toasty.Toasty
@@ -21,6 +18,7 @@ class NewTaskActivity : AppCompatActivity() {
     private lateinit var desc: EditText
     private lateinit var now: EditText
     private lateinit var reminder: RadioButton
+    private lateinit var head: TextView
 
     private var calendar = Calendar.getInstance()
 
@@ -32,6 +30,7 @@ class NewTaskActivity : AppCompatActivity() {
         desc = findViewById(R.id.description)
         now = findViewById(R.id.date)
         reminder = findViewById(R.id.radio)
+        head = findViewById(R.id.addOrEdit)
 
         setTitle()
 
@@ -44,9 +43,11 @@ class NewTaskActivity : AppCompatActivity() {
     }
 
     private fun setTitle() {
+        val edit = "Edit Your Task"
         val intent = Intent()
         if (intent.hasExtra(EXTRA_ID)) {
             title = "Edit Task"
+            head.text = edit
             name.setText(intent.getStringExtra(EXTRA_NAME))
             desc.setText(intent.getStringExtra(EXTRA_DESC))
             now.setText(intent.getStringExtra(EXTRA_DATE))
@@ -69,6 +70,9 @@ class NewTaskActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_NAME, taskName)
         intent.putExtra(EXTRA_DESC, description)
         intent.putExtra(EXTRA_DATE, moment)
+
+        val taskId = EXTRA_ID
+        intent.putExtra(EXTRA_ID, taskId)
 
         setResult(Activity.RESULT_OK, intent)
         finish()
@@ -107,7 +111,7 @@ class NewTaskActivity : AppCompatActivity() {
     }
 
     private fun dateFormat() {
-        val format = "MMM dd, yyyy  HH:mm"
+        val format = "EEE, MMM dd, yyyy  HH:mm"
         val sdf = SimpleDateFormat(format, Locale.US)
         now.setText(sdf.format(calendar.time))
     }

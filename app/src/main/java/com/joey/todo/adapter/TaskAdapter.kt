@@ -1,25 +1,18 @@
 package com.joey.todo.adapter
 
-import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.joey.todo.R
-import com.joey.todo.room.Item
-import com.joey.todo.ui.NewTaskActivity
-import com.joey.todo.viewmodel.TaskViewModel
-import es.dmoral.toasty.Toasty
+import com.joey.todo.room.Task
 
 class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     private val inflater = LayoutInflater.from(context)
-    private var items = ArrayList<Item>()
+    private var items = ArrayList<Task>()
     var clickListener: TaskAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -50,13 +43,13 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
         }
     }
 
-    fun setItems(items: List<Item>) {
-        this.items = items as ArrayList<Item>
+    fun setItems(tasks: List<Task>) {
+        this.items = tasks as ArrayList<Task>
         notifyDataSetChanged()
     }
 
     /*
-    fun removeTask(item: Item) {
+    fun removeTask(item: Task) {
         items.forEachIndexed { index, task ->
             if (task.id == item.id) {
                 items.removeAt(index)
@@ -76,8 +69,8 @@ class TaskAdapter internal constructor(context: Context) : RecyclerView.Adapter<
     }
 
     interface TaskAdapterListener {
-        fun editTask(item: Item)
-        fun deleteTask(item: Item)
+        fun editTask(task: Task)
+        fun deleteTask(task: Task)
     }
 
     fun alterTask(clickListener: TaskAdapterListener) {

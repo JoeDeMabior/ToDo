@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.joey.todo.R
 import com.joey.todo.adapter.TaskAdapter
-import com.joey.todo.room.Item
-import com.joey.todo.task_interface.AlterTaskListener
+import com.joey.todo.room.Task
 import com.joey.todo.viewmodel.TaskViewModel
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewTaskActivity::class.java)
-            startActivityForResult(intent, ADD_TASK_REQUEST_CODE)
+            startActivityForResult(intent, ADD_TASK)
         }
 
         initUI()
@@ -44,25 +43,26 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel::class.java)
-        taskViewModel.allItems.observe(this, Observer { items ->
+        taskViewModel.allTasks.observe(this, Observer { items ->
             items?.let { taskAdapter.setItems(it) }
         })
 
         taskAdapter.alterTask(object : TaskAdapter.TaskAdapterListener {
-            override fun editTask(item: Item) {
+            override fun editTask(task: Task) {
                 val intent = Intent(this@MainActivity, NewTaskActivity::class.java)
-                intent.putExtra(NewTaskActivity.EXTRA_NAME, item.title)
-                intent.putExtra(NewTaskActivity.EXTRA_DESC, item.description)
-                intent.putExtra(NewTaskActivity.EXTRA_DATE, item.deadline)
-                startActivityForResult(intent, EDIT_TASK_REQUEST_CODE)
+                intent.putExtra(NewTaskActivity.EXTRA_ID, task.id)
+                intent.putExtra(NewTaskActivity.EXTRA_NAME, task.title)
+                intent.putExtra(NewTaskActivity.EXTRA_DESC, task.description)
+                intent.putExtra(NewTaskActivity.EXTRA_DATE, task.deadline)
+                startActivityForResult(intent, EDIT_TASK)
             }
 
-            override fun deleteTask(item: Item) {
+            override fun deleteTask(task: Task) {
                 AlertDialog.Builder(this@MainActivity)
-                    .setMessage("Are you sure you want to delete ${item.title}?")
+                    .setMessage("Are you sure you want to delete ${task.title}?")
                     .setPositiveButton("OK") { _, _ ->
-                        taskViewModel.delete(item)
-                        Toasty.info(this@MainActivity, "${item.title} deleted.", Toast.LENGTH_SHORT).show()
+                        taskViewModel.delete(task)
+                        Toasty.info(this@MainActivity, "${task.title} deleted.", Toast.LENGTH_SHORT).show()
                     }
                     .setNegativeButton("Cancel") { dialog, _ ->
                         dialog.cancel()
@@ -101,33 +101,35 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == ADD_TASK && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val item = Item(
+                val task = Task(
+                    it.getIntExtra(NewTaskActivity.EXTRA_ID, 0),
                     it.getStringExtra(NewTaskActivity.EXTRA_NAME),
                     it.getStringExtra(NewTaskActivity.EXTRA_DESC),
                     it.getStringExtra(NewTaskActivity.EXTRA_DATE)
                 )
 
-                taskViewModel.insert(item)
+                taskViewModel.insert(task)
             }
             Toasty.success(this, "Task saved successfully.", Toast.LENGTH_SHORT).show()
-        } else if (requestCode == EDIT_TASK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == EDIT_TASK && resultCode == Activity.RESULT_OK) {
             data?.let {
-                val item = Item(
+                val task = Task(
+                    it.getIntExtra(NewTaskActivity.EXTRA_ID, 0),
                     it.getStringExtra(NewTaskActivity.EXTRA_NAME),
                     it.getStringExtra(NewTaskActivity.EXTRA_DESC),
                     it.getStringExtra(NewTaskActivity.EXTRA_DATE)
                 )
 
-                taskViewModel.update(item)
+                taskViewModel.update(task)
             }
             Toasty.success(this, "Task updated successfully.", Toast.LENGTH_SHORT).show()
         }
     }
 
     companion object {
-        const val ADD_TASK_REQUEST_CODE = 1
-        const val EDIT_TASK_REQUEST_CODE = 2
+        const val ADD_TASK = 1
+        const val EDIT_TASK = 2
     }
 }
