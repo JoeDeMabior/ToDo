@@ -1,14 +1,16 @@
 package com.joey.todo.room
 
-import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "todo_list")
 data class Task(
-    @NonNull var title: String,
-    @NonNull var description: String,
-    @NonNull var deadline: String
+    var title: String,
+    var description: String,
+    var deadline: String,
+    var hasReminder: Boolean,
+    var date: Date
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
