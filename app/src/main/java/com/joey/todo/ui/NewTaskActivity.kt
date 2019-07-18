@@ -1,8 +1,6 @@
 package com.joey.todo.ui
 
-import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.app.*
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -71,8 +69,9 @@ class NewTaskActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_DESC, description)
         intent.putExtra(EXTRA_DATE, moment)
 
-        val taskId = 0
-        intent.putExtra(EXTRA_ID, taskId)
+        val taskId = getIntent().getIntExtra(EXTRA_ID, -1)
+        if (taskId != -1)
+            intent.putExtra(EXTRA_ID, taskId)
 
         setResult(Activity.RESULT_OK, intent)
         finish()

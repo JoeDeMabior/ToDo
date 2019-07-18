@@ -43,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel::class.java)
-        taskViewModel.allTasks.observe(this, Observer { items ->
-            items?.let { taskAdapter.setItems(it) }
+        taskViewModel.allTasks.observe(this, Observer {
+            taskAdapter.setItems(it)
         })
 
         taskAdapter.alterTask(object : TaskAdapter.TaskAdapterListener {
@@ -101,28 +101,31 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == ADD_TASK && resultCode == Activity.RESULT_OK) {
-            data?.let {
+        if (data != null) {
+            if (requestCode == ADD_TASK && resultCode == Activity.RESULT_OK) {
                 val task = Task(
-                    it.getStringExtra(NewTaskActivity.EXTRA_NAME),
-                    it.getStringExtra(NewTaskActivity.EXTRA_DESC),
-                    it.getStringExtra(NewTaskActivity.EXTRA_DATE)
+                    data.getStringExtra(NewTaskActivity.EXTRA_NAME),
+                    data.getStringExtra(NewTaskActivity.EXTRA_DESC),
+                    data.getStringExtra(NewTaskActivity.EXTRA_DATE)
                 )
-
                 taskViewModel.insert(task)
-            }
-            Toasty.success(this, "Task saved successfully.", Toast.LENGTH_SHORT).show()
-        } else if (requestCode == EDIT_TASK && resultCode == Activity.RESULT_OK) {
-            data?.let {
-                val task = Task(
-                    it.getStringExtra(NewTaskActivity.EXTRA_NAME),
-                    it.getStringExtra(NewTaskActivity.EXTRA_DESC),
-                    it.getStringExtra(NewTaskActivity.EXTRA_DATE)
-                )
+                Toasty.success(this, "Task saved successfully.", Toast.LENGTH_SHORT).show()
+            } else if (requestCode == EDIT_TASK && resultCode == Activity.RESULT_OK) {
+                val taskId = data.getIntExtra(NewTaskActivity.EXTRA_ID, -1)
+                if (taskId == -1) {
+                    Toasty.error(this, "Error, could not update task.", Toast.LENGTH_SHORT).show()
+                    return
+                }
 
+                val task = Task(
+                    data.getStringExtra(NewTaskActivity.EXTRA_NAME),
+                    data.getStringExtra(NewTaskActivity.EXTRA_DESC),
+                    data.getStringExtra(NewTaskActivity.EXTRA_DATE)
+                )
+                task.id = taskId
                 taskViewModel.update(task)
+                Toasty.success(this, "Task updated successfully.", Toast.LENGTH_SHORT).show()
             }
-            Toasty.success(this, "Task updated successfully.", Toast.LENGTH_SHORT).show()
         }
     }
 
